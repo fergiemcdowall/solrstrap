@@ -1,1 +1,4 @@
 body {padding-top: 60px;}
+#search-form {margin:0px;}
+#search-div {margin-top:5px;}
+html { overflow-y: scroll; } /*force scrollbar*/
