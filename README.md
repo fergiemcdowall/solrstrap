@@ -1,0 +1,4 @@
+solrstrap
+=========
+
+coming...
