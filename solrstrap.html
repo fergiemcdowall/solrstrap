@@ -10,53 +10,41 @@
   </head>
   <body screen_capture_injected="true">
 
-
-
+    <!--actual visible HTML-->
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a class="brand" href="#">Solrstrap</a>
-          <form id="search-form" class="form-search">
-            <div id="search-div" class="input-append offset5">
-              <input id="searchterm" type="text" class="span4 search-query">
-              <button id="search" class="btn">Search</button>
+          <form class="navbar-search pull-left">
+            <div id="search-div">
+              <input type="text" class="search-query span6" placeholder="Search" id="searchbox" name="q">
             </div>
           </form>
+          <a class="brand" style="float:right" href="#">Solrstrap</a>
         </div>
       </div>
     </div>
     <div class="container">
-      <!--
-      <input id="searchterm" />
-      <button id="search">search</button>
-    -->
       <div id="rs"></div>
     </div>
 
-
-
-
-
+    <!--load scripts at the bottom-->
     <script src="http://code.jquery.com/jquery.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.0.0.beta6/handlebars.min.js"></script>
+
+    <!--Handlebars layout templates-->
     <script id="hit-template" type="text/x-handlebars-template">
     <div class="entry">
     <b>{{title}}</b><br>
     {{text}}
     </div>
     </script>
-    <script type='text/javascript'>
-    var hitTemplate = Handlebars.compile($("#hit-template").html());
-    $("#search").click(function(){
-      $("#rs").empty();
-      $.getJSON("http://evolvingweb.ca/solr/reuters/select/?q=" + $("#searchterm").val() + "&wt=json&json.wrf=?&rows=20", function(result){
-        for (var i = 0; i < result.response.docs.length; i++) {
-          $("#rs").append(hitTemplate({title: result.response.docs[i].title, text: result.response.docs[i].text}));
-        }
-      });
-    });
+    <script id="result-summary-template" type="text/x-handlebars-template">
+    <div id="result-summary">
+    {{totalresults}} results for <b><i>{{query}}</i></b>
+    </div>
     </script>
+    <script type='text/javascript' src="bootstrap/js/solrstrap.js"></script>
 
   </body>
 </html>
