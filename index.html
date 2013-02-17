@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=640" />
+
+    <link rel="stylesheet" href="stylesheets/core.css" media="screen"/>
+    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)"/>
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+
+    <script type="text/javascript" src="javascripts/modernizr.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#main_content').headsmart()
+      })
+    </script>
+    <title>Solrstrap by fergiemcdowall</title>
+  </head>
+
+  <body>
+    <a id="forkme_banner" href="https://github.com/fergiemcdowall/solrstrap">View on GitHub</a>
+    <div class="shell">
+
+      <header>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <h1>Solrstrap</h1>
+            <h2>A blazing fast tool for querying Solr in a Googleish fashion</h2>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+      </header>
+
+      <section id="downloads">
+        <span class="inner">
+          <a href="https://github.com/fergiemcdowall/solrstrap/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/fergiemcdowall/solrstrap/tarball/master" class="tgz"><em>download</em> .TGZ</a>
+        </span>
+      </section>
+
+
+      <span class="banner-fix"></span>
+
+
+      <section id="main_content">
+        <h1>Solrstrap</h1>
+
+<p>Solrstrap is a Query-Result interface for Solr. Solrstrap is intended to be a starting point for those building web interfaces that talk to Solr, or a very lightweight admin tool for querying Solr in a Googleish fashion.</p>
+
+<h1>What does Solrstrap do?</h1>
+
+<p>Solrstrap takes search queries and displays search results. It also features:</p>
+
+<ul>
+<li>Instant search</li>
+<li>Restful interface (you can link directly to /solrstrap.html?q=doughnuts)</li>
+<li>Functioning history</li>
+</ul><h1>Solrstrap is probably the fastest available rendering engine for Solr.</h1>
+
+<p>This because it does everything in Javascript, CSS and HTML on the client side. JSON is shot back from the server and interpeted by the web browser.</p>
+
+<p>Solrstrap therefore requires much less server power and bandwidth than standard search-middleware applications.</p>
+
+<h2>Installation, How do I make it work?</h2>
+
+<p>Optionally edit SERVERROOT in /js/solrstrap.js to point to the "select" endpoint of your solr instance</p>
+
+<p>Click on /solrstrap.html.</p>
+
+<p>Thats it.</p>
+
+<h1>What is Solrstrap made of?</h1>
+
+<p>Solr strap is lovingly crafted from <a href="http://twitter.github.com/bootstrap/">Bootstrap</a> and <a href="http://handlebarsjs.com">Handlebars</a>.</p>
+
+<h1>Strengths</h1>
+
+<ul>
+<li>Requires <em>only</em> local installation- very easy to set up</li>
+<li>Blazing fast</li>
+<li>Uses very little bandwidth</li>
+</ul><h1>Weakenesses</h1>
+
+<ul>
+<li>Designed for "open" solr instances- needs clear access to /select/q=.</li>
+<li>SEO basically non-existant</li>
+<li>Will (probably) not work on truly ancient browsers (IE 7 and below)</li>
+</ul><h1>Future releases</h1>
+
+<ul>
+<li>Support for facets...</li>
+<li>Support for infinite scrolling...</li>
+<li>Some form of arrow key functionality...</li>
+</ul><h1>License</h1>
+
+<p>Issued under the Gnu Public License v3 as per /gpl-3.0.txt</p>
+      </section>
+
+      <footer>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <p>this project by <a href="https://github.com/fergiemcdowall">fergiemcdowall</a> can be found on <a href="https://github.com/fergiemcdowall/solrstrap">GitHub</a></p>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+        <p>Generated with <a href="http://pages.github.com">GitHub Pages</a> using Merlot</p>
+        <span class="octocat"></span>
+      </footer>
+
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-38564073-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
