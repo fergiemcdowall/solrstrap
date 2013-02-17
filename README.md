@@ -1,6 +1,6 @@
 #Solrstrap
 
-Solrstrap is a Query-Result interface for Solr. Solrstrap is intended to be a starting point for those building web interfaces that talk to Solr.
+Solrstrap is a Query-Result interface for Solr. Solrstrap is intended to be a starting point for those building web interfaces that talk to Solr, or a very lightweight admin tool for querying Solr in a Googleish fashion.
 
 ##What does Solrstrap do?
 Solrstrap takes search queries and displays search results. It also features:
@@ -8,12 +8,11 @@ Solrstrap takes search queries and displays search results. It also features:
 * Restful interface (you can link directly to /solrstrap.html?q=doughnuts)
 * Functioning history
 
-##Why is Solrstrap cool?
-Solrstrap is cool because it does everything in Javascript, CSS and HTML on the client side. JSON is shot back from the server and interpeted by the web browser.
+##Solrstrap is probably the fastest available rendering engine for Solr.
 
-Solrstrap therefore requires much less server power and bandwidth than standard middleware applications.
+This because it does everything in Javascript, CSS and HTML on the client side. JSON is shot back from the server and interpeted by the web browser.
 
-This _probably_ makes solrstrap the fastest available rendering engine for Solr.
+Solrstrap therefore requires much less server power and bandwidth than standard search-middleware applications.
 
 ##Installation, How do I make it work?
 Optionally edit SERVERROOT in /js/solrstrap.js to point to the "select" endpoint of your solr instance
@@ -31,7 +30,7 @@ Solr strap is lovingly crafted from [Bootstrap](http://twitter.github.com/bootst
 * Uses very little bandwidth
 
 ##Weakenesses
-* Is designed for "open" solr instances.
+* Designed for "open" solr instances- needs clear access to /select/q=.
 * SEO basically non-existant
 * Will (probably) not work on truly ancient browsers (IE 7 and below)
 
