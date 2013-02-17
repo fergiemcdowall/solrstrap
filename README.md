@@ -10,7 +10,7 @@ Solrstrap takes search queries and displays search results. It also features:
 
 #Solrstrap is probably the fastest available rendering engine for Solr.
 
-This because it does everything in Javascript, CSS and HTML on the client side. JSON is shot back from the server and interpeted by the web browser.
+This is because it does everything in Javascript, CSS and HTML on the client side. JSON is shot back from the server and interpeted by the web browser.
 
 Solrstrap therefore requires much less server power and bandwidth than standard search-middleware applications.
 
@@ -30,7 +30,7 @@ Solr strap is lovingly crafted from [Bootstrap](http://twitter.github.com/bootst
 * Blazing fast
 * Uses very little bandwidth
 
-#Weakenesses
+#Weaknesses
 * Designed for "open" solr instances- needs clear access to /select/q=.
 * SEO basically non-existant
 * Will (probably) not work on truly ancient browsers (IE 7 and below)
