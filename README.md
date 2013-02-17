@@ -14,7 +14,7 @@ This is because it does everything in Javascript, CSS and HTML on the client sid
 
 Solrstrap therefore requires much less server power and bandwidth than standard search-middleware applications.
 
-##Installation, How do I make it work?
+#Installation, How do I make it work?
 Optionally edit SERVERROOT in /js/solrstrap.js to point to the "select" endpoint of your solr instance, and HITTILE/HITBODY to reference the appropriate fields in your index
 
 Click on /solrstrap.html.
