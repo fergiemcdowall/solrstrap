@@ -2,6 +2,8 @@
 
 Solrstrap is a Query-Result interface for Solr. Solrstrap is intended to be a starting point for those building web interfaces that talk to Solr, or a very lightweight admin tool for querying Solr in a Googleish fashion.
 
+[Downloaded the latest release of Solrstrap here](https://github.com/fergiemcdowall/solrstrap/zipball/master) or visit https://github.com/fergiemcdowall/solrstrap/ for other download options
+
 #What does Solrstrap do?
 Solrstrap takes search queries and displays search results. It also features:
 * Instant search
@@ -22,7 +24,7 @@ Click on /solrstrap.html.
 Thats it.
 
 #What is Solrstrap made of?
-Solr strap is lovingly crafted from [Bootstrap](http://twitter.github.com/bootstrap/) and [Handlebars](http://handlebarsjs.com).
+Solrstrap is lovingly crafted from [Bootstrap](http://twitter.github.com/bootstrap/) and [Handlebars](http://handlebarsjs.com).
 
 #Strengths
 * Requires _only_ local installation- very easy to set up
