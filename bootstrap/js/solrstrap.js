@@ -1,8 +1,9 @@
 
 
-//CONST
-var SERVERROOT = "http://evolvingweb.ca/solr/reuters/select/"; //Change this!!
-
+//CONST- CHANGE ALL THESE TO TELL SOLRSTRAP ABOUT THE LOCATION AND STRUCTURE OF YOUR SOLR
+var SERVERROOT = 'http://evolvingweb.ca/solr/reuters/select/'; //SELECT endpoint
+var HITTITLE = 'title';                                        //Name of the title field- the heading of each hit
+var HITBODY = 'text';                                          //Name of the body field- the teaser text of each hit
 
 
 
@@ -35,7 +36,7 @@ var SERVERROOT = "http://evolvingweb.ca/solr/reuters/select/"; //Change this!!
           rs.empty();
           rs.append(summaryTemplate({totalresults: result.response.numFound, query: q}));
           for (var i = 0; i < result.response.docs.length; i++) {
-            rs.append(hitTemplate({title: result.response.docs[i].title, text: result.response.docs[i].text}));
+            rs.append(hitTemplate({title: result.response.docs[i][HITTITLE], text: result.response.docs[i][HITBODY]}));
           }
           rs.css({ opacity: 1 });
         }
