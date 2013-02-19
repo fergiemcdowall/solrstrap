@@ -4,6 +4,8 @@
 
 [Download the latest release of Solrstrap here](https://github.com/fergiemcdowall/solrstrap/zipball/master) or visit https://github.com/fergiemcdowall/solrstrap/ for other download options
 
+The Solrstrap homepage is at http://fergiemcdowall.github.com/solrstrap/
+
 #What does Solrstrap do?
 Solrstrap takes search queries and displays search results. It also features:
 * Instant search
