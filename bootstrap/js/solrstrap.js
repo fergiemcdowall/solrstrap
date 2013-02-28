@@ -18,7 +18,7 @@ var HITSPERPAGE = 20;
 //when the searchbox is typed- do this
   $('#searchbox').keyup(function() {
     if ($(this).val().length > 3) {
-      $('#chunk1').loadSolrResults($(this).val(), Handlebars.compile($("#hit-template").html()), Handlebars.compile($("#result-summary-template").html()), 0);
+      $('div[offset="0"]').loadSolrResults($(this).val(), Handlebars.compile($("#hit-template").html()), Handlebars.compile($("#result-summary-template").html()), 0);
     }
     else {
       $('#rs').css({ opacity: 0.5 });
@@ -66,6 +66,7 @@ var HITSPERPAGE = 20;
             if (offset == 0) {
               rs.empty();          
               rs.append(summaryTemplate({totalresults: result.response.numFound, query: q}));
+              rs.siblings().remove();
             }
             for (var i = 0; i < result.response.docs.length; i++) {
               rs.append(hitTemplate({title: result.response.docs[i][HITTITLE], text: result.response.docs[i][HITBODY]}));
