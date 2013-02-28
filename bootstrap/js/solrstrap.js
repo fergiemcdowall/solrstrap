@@ -39,6 +39,10 @@ var HITSPERPAGE = 20;
       elem = this;
       $(window).scroll(function(event){
         if (isScrolledIntoView(elem) && !$(elem).attr('loaded')) {
+          //dont instantsearch and autoload at the same time
+          if ($('#searchbox').val() != getURLParam('q')) {
+            window.location = 'solrstrap.html?q=' + $('#searchbox').val();
+          }
           $(elem).attr('loaded', true);
           $(elem).getSolrResults(q, hitTemplate, summaryTemplate, offset);
           $(window).unbind('scroll');
@@ -49,7 +53,7 @@ var HITSPERPAGE = 20;
 
 
 
-
+  //jquery plugin for takling to solr
   (function( $ ){
     $.fn.getSolrResults = function(q, hitTemplate, summaryTemplate, offset) {
       var rs = this;
@@ -62,6 +66,7 @@ var HITSPERPAGE = 20;
           'start': offset
         },
         function(result){
+          console.log(result);
           if (result.response.docs.length > 0) {
             if (offset == 0) {
               rs.empty();          
@@ -72,10 +77,13 @@ var HITSPERPAGE = 20;
               rs.append(hitTemplate({title: result.response.docs[i][HITTITLE], text: result.response.docs[i][HITBODY]}));
             }
             $(rs).parent().css({ opacity: 1 });
-            var nextDiv = document.createElement('div');
-            $(nextDiv).attr('offset', +HITSPERPAGE+offset);
-            rs.parent().append(nextDiv);
-            $(nextDiv).loadSolrResultsWhenVisible(q, hitTemplate, summaryTemplate, +HITSPERPAGE+offset);
+            //if more results to come- set up the autoload div
+            if ((+HITSPERPAGE+offset) < +result.response.numFound) {
+              var nextDiv = document.createElement('div');
+              $(nextDiv).attr('offset', +HITSPERPAGE+offset);
+              rs.parent().append(nextDiv);
+              $(nextDiv).loadSolrResultsWhenVisible(q, hitTemplate, summaryTemplate, +HITSPERPAGE+offset);
+            }
           }
         });
     };
