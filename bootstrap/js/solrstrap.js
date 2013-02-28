@@ -90,7 +90,6 @@ var HITSPERPAGE = 20;
   })( jQuery );
 
 
-
   //utility function for grabbling URLs
   function getURLParam(name) {
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
