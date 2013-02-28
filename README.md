@@ -9,6 +9,7 @@ The Solrstrap homepage is at http://fergiemcdowall.github.com/solrstrap/
 #What does Solrstrap do?
 Solrstrap takes search queries and displays search results. It also features:
 * Instant search
+* Infinite scrolling
 * Restful interface (you can link directly to /solrstrap.html?q=doughnuts)
 * Functioning history
 
@@ -19,7 +20,7 @@ This is because it does everything in Javascript, CSS and HTML on the client sid
 Solrstrap therefore requires much less server power and bandwidth than standard search-middleware applications.
 
 #Installation, How do I make it work?
-Optionally edit SERVERROOT in /js/solrstrap.js to point to the "select" endpoint of your solr instance, and HITTILE/HITBODY to reference the appropriate fields in your index
+Optionally edit SERVERROOT in /js/solrstrap.js to point to the "select" endpoint of your solr instance, and HITTITLE/HITBODY to reference the appropriate fields in your index
 
 Click on /solrstrap.html.
 
@@ -41,7 +42,6 @@ Solrstrap is lovingly crafted from [Bootstrap](http://twitter.github.com/bootstr
 
 #Future releases
 * Support for facets...
-* Support for infinite scrolling...
 * Some form of arrow key functionality...
 
 #License

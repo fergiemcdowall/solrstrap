@@ -33,7 +33,7 @@ var HITSPERPAGE = 20;
   })( jQuery );
 
 
-  //jquery plugin allows autoloading of next results.
+  //jquery plugin allows autoloading of next results when scrolling.
   (function( $ ){
     $.fn.loadSolrResultsWhenVisible = function(q, hitTemplate, summaryTemplate, offset) {
       elem = this;
