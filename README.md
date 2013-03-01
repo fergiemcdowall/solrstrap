@@ -6,6 +6,11 @@ The current stable version is 0.2. [Download the latest release of Solrstrap 0.2
 
 The Solrstrap homepage is at http://fergiemcdowall.github.com/solrstrap/
 
+#Get Solrstrap
+[Download the latest release of Solrstrap 0.2 here](https://github.com/fergiemcdowall/solrstrap/archive/v0.2.zip)
+
+Follow the download links or cloning instructions on https://github.com/fergiemcdowall/solrstrap/
+
 #What does Solrstrap do?
 Solrstrap takes search queries and displays search results. It also features:
 * Instant search
@@ -58,9 +63,6 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-
-#Get Solrstrap
-Follow the download links or cloning instructions on https://github.com/fergiemcdowall/solrstrap/
 
 #Contact
 Follow/contact me on Twitter [@fergiemcdowall](https://twitter.com/fergiemcdowall)
