@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sorlstrap Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+    <link href="bootstrap/css/solrstrap.css" rel="stylesheet" media="screen">
+  </head>
+  <body screen_capture_injected="true">
+
+    <!--actual visible HTML-->
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <form class="navbar-search pull-left">
+            <div id="search-div">
+              <input type="text" class="search-query span6" placeholder="Search" onfocus="this.value = this.value;" id="searchbox" name="q">
+            </div>
+          </form>
+          <a class="brand" style="float:right" href="#">Solrstrap</a>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div id="rs">
+        <div offset="0"></div>  
+      </div>
+    </div>
+
+    <!--load scripts at the bottom-->
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.0.0.beta6/handlebars.min.js"></script>
+
+    <!--Handlebars layout templates-->
+    <script id="hit-template" type="text/x-handlebars-template">
+    <div class="entry">
+    <b>{{title}}</b><br>
+    {{text}}
+    </div>
+    </script>
+    <script id="result-summary-template" type="text/x-handlebars-template">
+    <div id="result-summary">
+    {{totalresults}} results for <b><i>{{query}}</i></b>
+    </div>
+    </script>
+    <script type='text/javascript' src="bootstrap/js/solrstrap.js"></script>
+
+  </body>
+</html>

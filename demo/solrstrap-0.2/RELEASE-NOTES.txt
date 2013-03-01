@@ -1,0 +1,5 @@
+Release notes 2.0
+-----------------
+
+*Added infinite scrolling
+*Changed license from GPL to Apache 2.0
