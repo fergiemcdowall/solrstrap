@@ -2,11 +2,14 @@
 
 [Solrstrap](http://fergiemcdowall.github.com/solrstrap/) is a Query-Result interface for Solr. [Solrstrap](http://fergiemcdowall.github.com/solrstrap/) is intended to be a starting point for those building web interfaces that talk to Solr, or a very lightweight admin tool for querying Solr in a Googleish fashion.
 
-The current stable version is 0.2. [Download the latest release of Solrstrap 0.2 here](https://github.com/fergiemcdowall/solrstrap/archive/v0.2.zip) or visit https://github.com/fergiemcdowall/solrstrap/ for other download options
+The Solrstrap homepage is here: http://fergiemcdowall.github.com/solrstrap/
 
-The Solrstrap homepage is at http://fergiemcdowall.github.com/solrstrap/
+A demo can be found here: http://fergiemcdowall.github.com/solrstrap/demo/solrstrap-0.2/solrstrap.html
 
 #Get Solrstrap
+
+The current stable version is 0.2.
+
 [Download the latest release of Solrstrap 0.2 here](https://github.com/fergiemcdowall/solrstrap/archive/v0.2.zip)
 
 Follow the download links or cloning instructions on https://github.com/fergiemcdowall/solrstrap/
