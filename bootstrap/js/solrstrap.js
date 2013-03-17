@@ -11,13 +11,7 @@ var FACETS = ['topics','organisations'];                       //facet categorie
 //when the page is loaded- do this
   $(document).ready(function() {
     $('#solrstrap-hits').append('<div offset="0"></div>');
-    $('div[offset="0"]').loadSolrResults(getURLParam('q'),
-      getURLParamArray('fq'),
-      Handlebars.compile($("#hit-template").html()),
-      Handlebars.compile($("#result-summary-template").html()),
-      Handlebars.compile($("#nav-template").html()),
-      Handlebars.compile($("#chosen-nav-template").html()),
-      0);
+    $('#solrstrap-hits div[offset="0"]').loadSolrResults(getURLParam('q'), getURLParamArray('fq'), 0);
     $('#solrstrap-searchbox').attr('value', getURLParam('q'));
     $('#solrstrap-searchbox').focus();
   });
@@ -25,13 +19,7 @@ var FACETS = ['topics','organisations'];                       //facet categorie
 //when the searchbox is typed- do this
   $('#solrstrap-searchbox').keyup(function() {
     if ($(this).val().length > 3) {
-      $('div[offset="0"]').loadSolrResults($(this).val(),
-        getURLParamArray('fq'),
-        Handlebars.compile($("#hit-template").html()),
-        Handlebars.compile($("#result-summary-template").html()),
-        Handlebars.compile($("#nav-template").html()),
-        Handlebars.compile($("#chosen-nav-template").html()),
-        0);
+      $('#solrstrap-hits div[offset="0"]').loadSolrResults($(this).val(), getURLParamArray('fq'), 0);
     }
     else {
       $('#solrstrap-hits').css({ opacity: 0.5 });
@@ -40,15 +28,15 @@ var FACETS = ['topics','organisations'];                       //facet categorie
 
   //jquery plugin allows resultsets to be painted onto any div.
   (function( $ ){
-    $.fn.loadSolrResults = function(q, fq, hitTemplate, summaryTemplate, navTemplate, chosenNavTemplate, offset) {
-      $(this).getSolrResults(q, fq, hitTemplate, summaryTemplate, navTemplate, chosenNavTemplate, offset);
+    $.fn.loadSolrResults = function(q, fq, offset) {
+      $(this).getSolrResults(q, fq, offset);
     };
   })( jQuery );
 
 
   //jquery plugin allows autoloading of next results when scrolling.
   (function( $ ){
-    $.fn.loadSolrResultsWhenVisible = function(q, fq, hitTemplate, summaryTemplate, navTemplate, chosenNavTemplate, offset) {
+    $.fn.loadSolrResultsWhenVisible = function(q, fq, offset) {
       elem = this;
       $(window).scroll(function(event){
         if (isScrolledIntoView(elem) && !$(elem).attr('loaded')) {
@@ -57,7 +45,7 @@ var FACETS = ['topics','organisations'];                       //facet categorie
             window.location = 'solrstrap.html?q=' + $('#solrstrap-searchbox').val();
           }
           $(elem).attr('loaded', true);
-          $(elem).getSolrResults(q, fq, hitTemplate, summaryTemplate, navTemplate, chosenNavTemplate, offset);
+          $(elem).getSolrResults(q, fq, offset);
           $(window).unbind('scroll');
         }
       });
@@ -67,7 +55,13 @@ var FACETS = ['topics','organisations'];                       //facet categorie
 
   //jquery plugin for takling to solr
   (function( $ ){
-    $.fn.getSolrResults = function(q, fq, hitTemplate, summaryTemplate, navTemplate, chosenNavTemplate, offset) {
+    $.fn.getSolrResults = function(q, fq, offset) {
+      var TEMPLATES = {
+        'hitTemplate':Handlebars.compile($("#hit-template").html()),
+        'summaryTemplate':Handlebars.compile($("#result-summary-template").html()),
+        'navTemplate':Handlebars.compile($("#nav-template").html()),
+        'chosenNavTemplate':Handlebars.compile($("#chosen-nav-template").html())
+      }
       var rs = this;
       $(rs).parent().css({ opacity: 0.5 });
       $.getJSON(getSearchURL(q, offset),
@@ -78,12 +72,12 @@ var FACETS = ['topics','organisations'];                       //facet categorie
             if (offset == 0) {
               rs.empty();
               //strapline that tells you how many hits you got
-              rs.append(summaryTemplate({totalresults: result.response.numFound, query: q}));
+              rs.append(TEMPLATES.summaryTemplate({totalresults: result.response.numFound, query: q}));
               rs.siblings().remove();
             }
             //draw the individual hits
             for (var i = 0; i < result.response.docs.length; i++) {
-              rs.append(hitTemplate({title: result.response.docs[i][HITTITLE], text: result.response.docs[i][HITBODY]}));
+              rs.append(TEMPLATES.hitTemplate({title: result.response.docs[i][HITTITLE], text: result.response.docs[i][HITBODY]}));
             }
             $(rs).parent().css({ opacity: 1 });
             //if more results to come- set up the autoload div
@@ -91,7 +85,7 @@ var FACETS = ['topics','organisations'];                       //facet categorie
               var nextDiv = document.createElement('div');
               $(nextDiv).attr('offset', +HITSPERPAGE+offset);
               rs.parent().append(nextDiv);
-              $(nextDiv).loadSolrResultsWhenVisible(q, fq, hitTemplate, summaryTemplate, navTemplate, chosenNavTemplate, +HITSPERPAGE+offset);
+              $(nextDiv).loadSolrResultsWhenVisible(q, fq, +HITSPERPAGE+offset);
             }
             //facets
             $('#solrstrap-facets').empty();
@@ -101,12 +95,12 @@ var FACETS = ['topics','organisations'];                       //facet categorie
               for (var i = 0; i < fq.length; i++) {
                 chosenNavs[fq[i]] = ('?q=' + q + '&fq=' + fq.join('&fq=')).replace('&fq=' + fq[i], '');
               }
-              $('#solrstrap-facets').append(chosenNavTemplate({navs: chosenNavs}));
+              $('#solrstrap-facets').append(TEMPLATES.chosenNavTemplate({navs: chosenNavs}));
             }
             //available facets
             for (var k in result.facet_counts.facet_fields) {
               if (result.facet_counts.facet_fields[k].length > 0) {
-                $('#solrstrap-facets').append(navTemplate({linkroot: window.location.pathname + '?q=' + q 
+                $('#solrstrap-facets').append(TEMPLATES.navTemplate({linkroot: window.location.pathname + '?q=' + q 
                   + ((fq.length > 0) ? '&fq=' : '') + fq.join('&fq='),
                   title: k, navs: makeNavsSensible(result.facet_counts.facet_fields[k])}));
               }
@@ -170,7 +164,7 @@ var FACETS = ['topics','organisations'];                       //facet categorie
     + '&rows=' + HITSPERPAGE
     + '&wt=json'
     + '&q=' + q
-    + '&offset=' + offset;
+    + '&start=' + offset;
     if (FACETS.length > 0) {
       URL += '&facet=true&facet.mincount=1&facet.limit=20';
       for (var i = 0; i < FACETS.length; i++) {
