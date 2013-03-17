@@ -14,6 +14,7 @@
 Solrstrap takes search queries and displays search results. It also features:
 * Instant search
 * Infinite scrolling
+* Facets
 * Restful interface (you can link directly to /solrstrap.html?q=doughnuts)
 * Functioning history
 
@@ -45,9 +46,9 @@ Solrstrap is lovingly crafted from [Bootstrap](http://twitter.github.com/bootstr
 * Will (probably) not work on truly ancient browsers (IE 7 and below)
 
 #Future releases
-* Support for facets...
 * Some form of arrow key functionality...
 * Meaningful error messages and sanity checks...
+* Nicer code
 
 #License
 Copyright 2013 Fergus McDowall
