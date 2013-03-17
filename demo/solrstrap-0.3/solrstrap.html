@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sorlstrap Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+    <link href="bootstrap/css/solrstrap.css" rel="stylesheet" media="screen">
+  </head>
+  <body screen_capture_injected="true">
+
+    <!--actual visible HTML-->
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="#">Solrstrap</a>
+          <form class="navbar-search" style="float:right">
+            <div id="search-div">
+              <input type="text" class="search-query span8" placeholder="Search" onfocus="this.value = this.value;" id="solrstrap-searchbox" name="q">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div id="solrstrap-facets" class="span2"></div>
+        <div id="solrstrap-hits" class="span10"></div>
+      </div>
+    </div>
+
+    <!--load scripts at the bottom-->
+    <script src="bootstrap/js/jquery.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="bootstrap/js/handlebars.js"></script>
+
+    <!--Handlebars layout templates-->
+    <script id="hit-template">
+    <div class="entry">
+    <b>{{title}}</b><br>
+    {{text}}
+    </div>
+    </script>
+    <script id="result-summary-template">
+    <div id="result-summary">
+    {{totalresults}} results for <b><i>{{query}}</i></b>
+    </div>
+    </script>
+    <script id="nav-template">
+    <div class="facet">
+    <span class="nav-title">{{title}}</span><br>
+    {{#each navs}}
+    <a href='{{../linkroot}}&fq={{../title}}:{{@key}}'>{{@key}}</a> ({{this}})<br/>
+    {{/each}}
+    </div>
+    </script>
+    <script id="chosen-nav-template">
+    <div class="facet">
+    <span class="nav-title">Filters</span><br>
+    {{#each navs}}
+    <a class="close" href="{{this}}">&times;</a><a href='{{this}}' id="{{@key}}" class="selectedNav">{{@key}}</a><br>
+    {{/each}}
+    </div>
+    </script>
+
+    <script type='text/javascript' src="bootstrap/js/solrstrap.js"></script>
+
+  </body>
+</html>
