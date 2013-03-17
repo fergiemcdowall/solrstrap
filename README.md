@@ -4,7 +4,7 @@
 
 **DEMO:** http://fergiemcdowall.github.com/solrstrap/demo/solrstrap-0.3/solrstrap.html
 
-**DOWNLOAD:** [Latest stable release- Solrstrap 0.2](https://github.com/fergiemcdowall/solrstrap/archive/v0.3.zip)
+**DOWNLOAD:** [Latest stable release- Solrstrap 0.3](https://github.com/fergiemcdowall/solrstrap/archive/v0.3.zip)
 
 **HOMEPAGE:** http://fergiemcdowall.github.com/solrstrap/
 
