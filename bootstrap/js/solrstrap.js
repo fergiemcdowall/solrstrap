@@ -47,7 +47,7 @@ var FACETS = ['topics','organisations'];
 
   //jquery plugin allows autoloading of next results when scrolling.
   (function( $ ){
-    $.fn.loadSolrResultsWhenVisible = function(q, hitTemplate, summaryTemplate, navTemplate, chosenNavTemplate, offset) {
+    $.fn.loadSolrResultsWhenVisible = function(q, fq, hitTemplate, summaryTemplate, navTemplate, chosenNavTemplate, offset) {
       elem = this;
       $(window).scroll(function(event){
         if (isScrolledIntoView(elem) && !$(elem).attr('loaded')) {
@@ -56,7 +56,7 @@ var FACETS = ['topics','organisations'];
             window.location = 'solrstrap.html?q=' + $('#searchbox').val();
           }
           $(elem).attr('loaded', true);
-          $(elem).getSolrResults(q, hitTemplate, summaryTemplate, navTemplate, chosenNavTemplate, offset);
+          $(elem).getSolrResults(q, fq, hitTemplate, summaryTemplate, navTemplate, chosenNavTemplate, offset);
           $(window).unbind('scroll');
         }
       });
@@ -97,7 +97,7 @@ var FACETS = ['topics','organisations'];
             if (offset == 0) {
               rs.empty();
               //strapline that tells you how many hits you got
-              rs.append(summaryTemplate({totalresults: result.response.numFound, query: q}));
+              $('#rs').append(summaryTemplate({totalresults: result.response.numFound, query: q}));
               rs.siblings().remove();
             }
             //draw the individual hits
@@ -110,7 +110,7 @@ var FACETS = ['topics','organisations'];
               var nextDiv = document.createElement('div');
               $(nextDiv).attr('offset', +HITSPERPAGE+offset);
               rs.parent().append(nextDiv);
-              $(nextDiv).loadSolrResultsWhenVisible(q, hitTemplate, summaryTemplate, +HITSPERPAGE+offset);
+              $(nextDiv).loadSolrResultsWhenVisible(q, fq, hitTemplate, summaryTemplate, navTemplate, chosenNavTemplate, +HITSPERPAGE+offset);
             }
             //facets
             $('#navs').empty();
@@ -124,7 +124,11 @@ var FACETS = ['topics','organisations'];
             }
             //available facets
             for (var k in result.facet_counts.facet_fields) {
-              $('#navs').append(navTemplate({linkroot: window.location.pathname + '?q=' + q + '&fq=' + fq.join('&fq='), title: k, navs: makeNavsSensible(result.facet_counts.facet_fields[k])}));
+              if (result.facet_counts.facet_fields[k].length > 0) {
+                $('#navs').append(navTemplate({linkroot: window.location.pathname + '?q=' + q 
+                  + ((fq.length > 0) ? '&fq=' : '') + fq.join('&fq='),
+                  title: k, navs: makeNavsSensible(result.facet_counts.facet_fields[k])}));
+              }
             }
           }
         });
