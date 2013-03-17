@@ -24,8 +24,12 @@
       </div>
     </div>
     <div class="container">
-      <div id="rs">
-        <div offset="0"></div>  
+      <div class="row">
+        <div id="navs" class="span2">
+        </div>
+        <div id="rs" class="span10">
+          <div offset="0"></div>  
+        </div>
       </div>
     </div>
 
@@ -46,6 +50,23 @@
     {{totalresults}} results for <b><i>{{query}}</i></b>
     </div>
     </script>
+    <script id="nav-template">
+    <div class="facet">
+    <span class="nav-title">{{title}}</span><br>
+    {{#each navs}}
+    <a href='{{../linkroot}}&fq={{../title}}:{{@key}}'>{{@key}}</a> ({{this}})<br/>
+    {{/each}}
+    </div>
+    </script>
+    <script id="chosen-nav-template">
+    <div class="facet">
+    <span class="nav-title">Filters</span><br>
+    {{#each navs}}
+    <a class="close" href="{{this}}">&times;</a><a href='{{this}}' id="{{@key}}" class="selectedNav">{{@key}}</a><br>
+    {{/each}}
+    </div>
+    </script>
+
     <script type='text/javascript' src="bootstrap/js/solrstrap.js"></script>
 
   </body>
