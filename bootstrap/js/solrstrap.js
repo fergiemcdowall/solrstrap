@@ -97,7 +97,7 @@ var FACETS = ['topics','organisations'];
             if (offset == 0) {
               rs.empty();
               //strapline that tells you how many hits you got
-              $('#rs').append(summaryTemplate({totalresults: result.response.numFound, query: q}));
+              rs.append(summaryTemplate({totalresults: result.response.numFound, query: q}));
               rs.siblings().remove();
             }
             //draw the individual hits
