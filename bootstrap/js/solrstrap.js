@@ -4,12 +4,13 @@
 var SERVERROOT = 'http://evolvingweb.ca/solr/reuters/select/'; //SELECT endpoint
 var HITTITLE = 'title';                                        //Name of the title field- the heading of each hit
 var HITBODY = 'text';                                          //Name of the body field- the teaser text of each hit
-var HITSPERPAGE = 20;
-var FACETS = ['topics','organisations'];
+var HITSPERPAGE = 20;                                          //page size- hits per page
+var FACETS = ['topics','organisations'];                       //facet categories
 
 
 //when the page is loaded- do this
   $(document).ready(function() {
+    $('#solrstrap-hits').append('<div offset="0"></div>');
     $('div[offset="0"]').loadSolrResults(getURLParam('q'),
       getURLParamArray('fq'),
       Handlebars.compile($("#hit-template").html()),
@@ -17,12 +18,12 @@ var FACETS = ['topics','organisations'];
       Handlebars.compile($("#nav-template").html()),
       Handlebars.compile($("#chosen-nav-template").html()),
       0);
-    $('#searchbox').attr('value', getURLParam('q'));
-    $('#searchbox').focus();
+    $('#solrstrap-searchbox').attr('value', getURLParam('q'));
+    $('#solrstrap-searchbox').focus();
   });
 
 //when the searchbox is typed- do this
-  $('#searchbox').keyup(function() {
+  $('#solrstrap-searchbox').keyup(function() {
     if ($(this).val().length > 3) {
       $('div[offset="0"]').loadSolrResults($(this).val(),
         getURLParamArray('fq'),
@@ -33,7 +34,7 @@ var FACETS = ['topics','organisations'];
         0);
     }
     else {
-      $('#rs').css({ opacity: 0.5 });
+      $('#solrstrap-hits').css({ opacity: 0.5 });
     }
   });
 
@@ -52,8 +53,8 @@ var FACETS = ['topics','organisations'];
       $(window).scroll(function(event){
         if (isScrolledIntoView(elem) && !$(elem).attr('loaded')) {
           //dont instantsearch and autoload at the same time
-          if ($('#searchbox').val() != getURLParam('q')) {
-            window.location = 'solrstrap.html?q=' + $('#searchbox').val();
+          if ($('#solrstrap-searchbox').val() != getURLParam('q')) {
+            window.location = 'solrstrap.html?q=' + $('#solrstrap-searchbox').val();
           }
           $(elem).attr('loaded', true);
           $(elem).getSolrResults(q, fq, hitTemplate, summaryTemplate, navTemplate, chosenNavTemplate, offset);
@@ -62,26 +63,6 @@ var FACETS = ['topics','organisations'];
       });
     };
   })( jQuery );
-
-
-  function getSearchURL(q, offset) {
-    var URL = SERVERROOT
-    + '?json.wrf=?'
-    + '&rows=' + HITSPERPAGE
-    + '&wt=json'
-    + '&q=' + q
-    + '&offset=' + offset;
-    if (FACETS.length > 0) {
-      URL += '&facet=true&facet.mincount=1&facet.limit=20';
-      for (var i = 0; i < FACETS.length; i++) {
-        URL += '&facet.field=' + FACETS[i];
-      }
-      for (var i = 0; i < getURLParamArray('fq').length; i++) {
-        URL += '&fq=' + getURLParamArray('fq')[i];
-      }
-    }
-    return URL;
-  }
 
 
   //jquery plugin for takling to solr
@@ -113,19 +94,19 @@ var FACETS = ['topics','organisations'];
               $(nextDiv).loadSolrResultsWhenVisible(q, fq, hitTemplate, summaryTemplate, navTemplate, chosenNavTemplate, +HITSPERPAGE+offset);
             }
             //facets
-            $('#navs').empty();
+            $('#solrstrap-facets').empty();
             //chosen facets
             if (fq.length > 0) {
               var chosenNavs = {};
               for (var i = 0; i < fq.length; i++) {
                 chosenNavs[fq[i]] = ('?q=' + q + '&fq=' + fq.join('&fq=')).replace('&fq=' + fq[i], '');
               }
-              $('#navs').append(chosenNavTemplate({navs: chosenNavs}));
+              $('#solrstrap-facets').append(chosenNavTemplate({navs: chosenNavs}));
             }
             //available facets
             for (var k in result.facet_counts.facet_fields) {
               if (result.facet_counts.facet_fields[k].length > 0) {
-                $('#navs').append(navTemplate({linkroot: window.location.pathname + '?q=' + q 
+                $('#solrstrap-facets').append(navTemplate({linkroot: window.location.pathname + '?q=' + q 
                   + ((fq.length > 0) ? '&fq=' : '') + fq.join('&fq='),
                   title: k, navs: makeNavsSensible(result.facet_counts.facet_fields[k])}));
               }
@@ -157,6 +138,7 @@ var FACETS = ['topics','organisations'];
       return decodeURIComponent(results[1].replace(/\+/g, " "));
   }
 
+  //function to generate an array of URL parameters, where there are likely to be several params with the same key
   function getURLParamArray(name) {
     var paramArray = [];
     var paramString = window.location.search;
@@ -179,4 +161,24 @@ var FACETS = ['topics','organisations'];
     var elemTop = $(elem).offset().top;
     var elemBottom = elemTop + $(elem).height();
     return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
+  }
+
+  //generates a search URL from the CONSTants
+  function getSearchURL(q, offset) {
+    var URL = SERVERROOT
+    + '?json.wrf=?'
+    + '&rows=' + HITSPERPAGE
+    + '&wt=json'
+    + '&q=' + q
+    + '&offset=' + offset;
+    if (FACETS.length > 0) {
+      URL += '&facet=true&facet.mincount=1&facet.limit=20';
+      for (var i = 0; i < FACETS.length; i++) {
+        URL += '&facet.field=' + FACETS[i];
+      }
+      for (var i = 0; i < getURLParamArray('fq').length; i++) {
+        URL += '&fq=' + getURLParamArray('fq')[i];
+      }
+    }
+    return URL;
   }
