@@ -4,9 +4,9 @@
     <title>Sorlstrap Template</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
-    <link href="bootstrap/css/solrstrap.css" rel="stylesheet" media="screen">
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/solrstrap.css" rel="stylesheet" media="screen">
   </head>
   <body screen_capture_injected="true">
 
@@ -30,24 +30,20 @@
       </div>
     </div>
 
-    <!--load scripts at the bottom-->
-    <script src="bootstrap/js/jquery.min.js"></script>
-    <script src="bootstrap/js/bootstrap.min.js"></script>
-    <script src="bootstrap/js/handlebars.js"></script>
 
     <!--Handlebars layout templates-->
-    <script id="hit-template">
+    <script type='text/javascript' id="hit-template">
     <div class="entry">
     <b>{{title}}</b><br>
     {{text}}
     </div>
     </script>
-    <script id="result-summary-template">
+    <script type='text/javascript' id="result-summary-template">
     <div id="result-summary">
     {{totalresults}} results for <b><i>{{query}}</i></b>
     </div>
     </script>
-    <script id="nav-template">
+    <script type='text/javascript' id="nav-template">
     <div class="facet">
     <span class="nav-title">{{title}}</span><br>
     {{#each navs}}
@@ -55,7 +51,7 @@
     {{/each}}
     </div>
     </script>
-    <script id="chosen-nav-template">
+    <script type='text/javascript' id="chosen-nav-template">
     <div class="facet">
     <span class="nav-title">Filters</span><br>
     {{#each navs}}
@@ -64,7 +60,11 @@
     </div>
     </script>
 
-    <script type='text/javascript' src="bootstrap/js/solrstrap.js"></script>
+    <!--load scripts at the bottom-->
+    <script type='text/javascript' src="bootstrap/js/bootstrap.min.js"></script>
+    <script type='text/javascript' src="js/handlebars.js"></script>
+    <script type='text/javascript' src="js/jquery.min.js"></script>
+    <script type='text/javascript' src="js/solrstrap.js"></script>
 
   </body>
 </html>
