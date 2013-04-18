@@ -32,18 +32,18 @@
 
 
     <!--Handlebars layout templates-->
-    <script type='text/javascript' id="hit-template">
+    <script type="text/x-handlebars-template" id="hit-template">
     <div class="entry">
-    <b>{{title}}</b><br>
+    <strong>{{title}}</strong><br>
     {{text}}
     </div>
     </script>
-    <script type='text/javascript' id="result-summary-template">
+    <script type="text/x-handlebars-template" id="result-summary-template">
     <div id="result-summary">
-    {{totalresults}} results for <b><i>{{query}}</i></b>
+    {{totalresults}} results for <strong><i>{{query}}</i></strong>
     </div>
     </script>
-    <script type='text/javascript' id="nav-template">
+    <script type="text/x-handlebars-template" id="nav-template">
     <div class="facet">
     <span class="nav-title">{{title}}</span><br>
     {{#each navs}}
@@ -51,11 +51,11 @@
     {{/each}}
     </div>
     </script>
-    <script type='text/javascript' id="chosen-nav-template">
+    <script type="text/x-handlebars-template" id="chosen-nav-template">
     <div class="facet">
     <span class="nav-title">Filters</span><br>
     {{#each navs}}
-    <a class="close" href="{{this}}">&times;</a><a href='{{this}}' id="{{@key}}" class="selectedNav">{{@key}}</a><br>
+    <a class="close" href="{{this}}">&amp;times;</a><a href='{{this}}' id="{{@key}}" class="selectedNav">{{@key}}</a><br>
     {{/each}}
     </div>
     </script>
