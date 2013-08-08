@@ -77,7 +77,14 @@ var FACETS = ['topics','organisations'];                       //facet categorie
             }
             //draw the individual hits
             for (var i = 0; i < result.response.docs.length; i++) {
-              rs.append(TEMPLATES.hitTemplate({title: result.response.docs[i][HITTITLE], text: result.response.docs[i][HITBODY]}));
+	      var title = get_maybe_highlit(result, i, HITTITLE);
+	      var text = get_maybe_highlit(result, i, HITBODY);
+	      var teaser = get_maybe_highlit(result, i, HITTEASER);
+	      var link = result.response.docs[i][HITLINK];
+	      
+              rs.append(TEMPLATES.hitTemplate({title: title, teaser: teaser,
+		      text: text,
+		      link: link}));
             }
             $(rs).parent().css({ opacity: 1 });
             //if more results to come- set up the autoload div
@@ -174,5 +181,37 @@ var FACETS = ['topics','organisations'];                       //facet categorie
         URL += '&fq=' + getURLParamArray('fq')[i];
       }
     }
+    if (HL_FL) {
+      URL += '&hl=true&hl.fl='+HL_FL+'&hl.simple.pre='+HL_SIMPLE_PRE+'&hl.simple.post='+HL_SIMPLE_POST
+    }
     return URL;
+  }
+
+  //optionally convert a string array to a string, by concatenation
+  function array_as_string(array_or_string)
+  {
+    if (typeof(array_or_string) == 'string') 
+      return array_or_string;
+    else if (typeof(array_or_string) == 'object' 
+	     && array_or_string.hasOwnProperty('length') 
+	     && array_or_string.length > 0) 
+      return array_or_string.join(" ... ");
+    else 
+      return '';
+  }
+
+  //get field from result for document i, optionally replacing with
+  //highlit version
+  function get_maybe_highlit(result, i, field) 
+  {
+    var res = result.response.docs[i][field];
+    if (HL) {
+      var id = result.response.docs[i][HITID];
+      var hl_map = result.highlighting[id];
+      if (hl_map.hasOwnProperty(field)) {
+	res = hl_map[field];
+      }
+    }
+
+    return array_as_string(res);
   }
