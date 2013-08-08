@@ -7,14 +7,16 @@ var HITBODY = 'text';                                          //Name of the bod
 var HITSPERPAGE = 20;                                          //page size- hits per page
 var FACETS = ['topics','organisations'];                       //facet categories
 
-var HITID = 'id';
-var HITTEASER = 'text';
-var HITLINK = null;
+var HITID = 'id'		// Name of the id field
+var HITTEASER = 'teaser';	// Name of field to use for teaser
+var HITLINK = 'url';		// Name of field to use for link
+
 var HL = true;
-var HL_FL = ['title', 'text'];
+var HL_FL = 'text, title';
 var HL_SIMPLE_PRE = '<em>';
 var HL_SIMPLE_POST = '</em>';
 
+var FILTERS = [];
 
 //when the page is loaded- do this
   $(document).ready(function() {
@@ -72,63 +74,70 @@ var HL_SIMPLE_POST = '</em>';
       }
       var rs = this;
       $(rs).parent().css({ opacity: 0.5 });
-      $.getJSON(getSearchURL(q, offset),
-        function(result){
-          console.log(result);
-          //only redraw hits if there are new hits available
-          if (result.response.docs.length > 0) {
-            if (offset == 0) {
-              rs.empty();
-              //strapline that tells you how many hits you got
-              rs.append(TEMPLATES.summaryTemplate({totalresults: result.response.numFound, query: q}));
-              rs.siblings().remove();
-            }
-            //draw the individual hits
-            for (var i = 0; i < result.response.docs.length; i++) {
-	      var title = get_maybe_highlit(result, i, HITTITLE);
-	      var text = get_maybe_highlit(result, i, HITBODY);
-	      var resdata = {title: title, text: text};
-	      if (HITTEASER) {
+      $.ajax({url:SERVERROOT,
+	    dataType: 'jsonp',
+	    data: buildSearchParams(q, fq, offset), 
+	    traditional: true,
+	    jsonp: "json.wrf",
+	    success: 
+	  function(result){
+	    console.log(result);
+	    //only redraw hits if there are new hits available
+	    if (result.response.docs.length > 0) {
+	      if (offset == 0) {
+		rs.empty();
+		//strapline that tells you how many hits you got
+		rs.append(TEMPLATES.summaryTemplate({totalresults: result.response.numFound, query: q}));
+		rs.siblings().remove();
+	      }
+	      //draw the individual hits
+	      for (var i = 0; i < result.response.docs.length; i++) {
+		var title = get_maybe_highlit(result, i, HITTITLE);
+		var text = get_maybe_highlit(result, i, HITBODY);
 		var teaser = get_maybe_highlit(result, i, HITTEASER);
-		resdata.teaser = teaser;
-	      }
-	      if (HITLINK) {
 		var link = result.response.docs[i][HITLINK];
-		resdata.link = link;
-	      }
 	      
-              rs.append(TEMPLATES.hitTemplate({title: title, teaser: teaser,
-		      text: text,
-		      link: link}));
-            }
-            $(rs).parent().css({ opacity: 1 });
-            //if more results to come- set up the autoload div
-            if ((+HITSPERPAGE+offset) < +result.response.numFound) {
-              var nextDiv = document.createElement('div');
-              $(nextDiv).attr('offset', +HITSPERPAGE+offset);
-              rs.parent().append(nextDiv);
-              $(nextDiv).loadSolrResultsWhenVisible(q, fq, +HITSPERPAGE+offset);
-            }
-            //facets
-            $('#solrstrap-facets').empty();
-            //chosen facets
-            if (fq.length > 0) {
-              var chosenNavs = {};
-              for (var i = 0; i < fq.length; i++) {
-                chosenNavs[fq[i]] = ('?q=' + q + '&fq=' + fq.join('&fq=')).replace('&fq=' + fq[i], '');
-              }
-              $('#solrstrap-facets').append(TEMPLATES.chosenNavTemplate({navs: chosenNavs}));
-            }
-            //available facets
-            for (var k in result.facet_counts.facet_fields) {
-              if (result.facet_counts.facet_fields[k].length > 0) {
-                $('#solrstrap-facets').append(TEMPLATES.navTemplate({linkroot: window.location.pathname + '?q=' + q 
-                  + ((fq.length > 0) ? '&fq=' : '') + fq.join('&fq='),
-                  title: k, navs: makeNavsSensible(result.facet_counts.facet_fields[k])}));
-              }
-            }
-          }
-        });
+		var hit_data = {title: title, text: text};
+
+		if (teaser) {
+		  hit_data["teaser"] = teaser;
+		}
+		if (link) {
+		  hit_data["link"] = link;
+		}
+
+		rs.append(TEMPLATES.hitTemplate(hit_data));
+	      }
+	      $(rs).parent().css({ opacity: 1 });
+	      //if more results to come- set up the autoload div
+	      if ((+HITSPERPAGE+offset) < +result.response.numFound) {
+		var nextDiv = document.createElement('div');
+		$(nextDiv).attr('offset', +HITSPERPAGE+offset);
+		rs.parent().append(nextDiv);
+		$(nextDiv).loadSolrResultsWhenVisible(q, fq, +HITSPERPAGE+offset);
+	      }
+	      //facets
+	      $('#solrstrap-facets').empty();
+	      //chosen facets
+	      if (fq.length > 0) {
+		var chosenNavs = {};
+		for (var i = 0; i < fq.length; i++) {
+		  chosenNavs[fq[i]] = ('?q=' + q + '&fq=' + fq.join('&fq=')).replace('&fq=' + fq[i], '');
+		}
+		$('#solrstrap-facets').append(TEMPLATES.chosenNavTemplate({navs: chosenNavs}));
+	      }
+	      //available facets
+	      for (var k in result.facet_counts.facet_fields) {
+		if (result.facet_counts.facet_fields[k].length > 0) {
+		  $('#solrstrap-facets').append(TEMPLATES.navTemplate({linkroot: window.location.pathname + '?q=' + q 
+			  + ((fq.length > 0) ? '&fq=' : '') + fq.join('&fq='),
+			  title: k, navs: makeNavsSensible(result.facet_counts.facet_fields[k])}));
+		}
+	      }
+	      $("div.facet:not(:first-child) > a").click(add_nav);
+	      $("div.facet:first-child > a").click(del_nav);
+	    }
+	  }});
     };
   })( jQuery );
 
@@ -163,9 +172,9 @@ var HL_SIMPLE_POST = '</em>';
     var regex = new RegExp(regexS);
     while (regex.exec(paramString) != null) {
       var results = regex.exec(paramString);
-      var paramValue = results[1].replace(/\+/g, " ");
+      var paramValue = results[1];
       paramString = paramString.replace("&" + name + "=" + paramValue, "");
-      paramArray.push(decodeURIComponent(paramValue));
+      paramArray.push(decodeURIComponent(paramValue.replace(/\+/g, " ")));
     }
     return paramArray;
   }
@@ -202,6 +211,31 @@ var HL_SIMPLE_POST = '</em>';
     return URL;
   }
 
+  function buildSearchParams(q, fq, offset) {
+    var ret = { 
+    'rows': HITSPERPAGE,
+    'wt': 'json',
+    'q': q,
+    'start': offset
+    }
+    if (FACETS.length > 0) {
+      ret['facet'] = 'true';
+      ret['facet.mincount'] = '1';
+      ret['facet.limit'] = '20';
+      ret['facet.field'] = FACETS;
+    }
+    if (fq.length > 0) {
+      ret['fq'] = fq;
+    }
+    if (HL_FL) {
+      ret['hl'] = 'true';
+      ret['hl.fl'] = HL_FL;
+      ret['hl.simple.pre'] = HL_SIMPLE_PRE;
+      ret['hl.simple.post'] = HL_SIMPLE_POST;
+    }
+    return ret;
+  }
+
   //optionally convert a string array to a string, by concatenation
   function array_as_string(array_or_string)
   {
@@ -229,4 +263,31 @@ var HL_SIMPLE_POST = '</em>';
     }
 
     return array_as_string(res);
+  }
+
+  //handler for navigator selection
+  function add_nav(event) 
+  {
+    var whence = event.target;
+    var navname = $(whence).closest("div.facet").children("span.nav-title").text();
+    var navvalue = $(whence).text();
+    var newparam = {"fq": navname + ':"' + navvalue.replace(/([\\\"])/g, "\\$1")};
+    window.location.search += "&" + $.param(newparam) + '"';
+
+    // window.location.search += "&fq=" + encodeURIComponent(navname + ':"' + navvalue.replace(/([\\\"])/g, "\\$1") + '"');
+
+    return false;
+  }
+
+  //handler for navigator de-selection
+  function del_nav(event) 
+  {
+    var whence = event.target;
+    if ($(whence).hasClass("close")) {
+      whence = $(whence).next().next();
+    }
+    var filter = $(whence).text();
+    var pattern = "&fq=" + encodeURIComponent(filter).replace(/%20/g, "+");
+    window.location.search = window.location.search.replace(pattern, '');
+    return false;
   }
