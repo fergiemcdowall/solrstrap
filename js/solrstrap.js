@@ -7,6 +7,14 @@ var HITBODY = 'text';                                          //Name of the bod
 var HITSPERPAGE = 20;                                          //page size- hits per page
 var FACETS = ['topics','organisations'];                       //facet categories
 
+var HITID = 'id';
+var HITTEASER = 'text';
+var HITLINK = null;
+var HL = true;
+var HL_FL = ['title', 'text'];
+var HL_SIMPLE_PRE = '<em>';
+var HL_SIMPLE_POST = '</em>';
+
 
 //when the page is loaded- do this
   $(document).ready(function() {
@@ -79,8 +87,15 @@ var FACETS = ['topics','organisations'];                       //facet categorie
             for (var i = 0; i < result.response.docs.length; i++) {
 	      var title = get_maybe_highlit(result, i, HITTITLE);
 	      var text = get_maybe_highlit(result, i, HITBODY);
-	      var teaser = get_maybe_highlit(result, i, HITTEASER);
-	      var link = result.response.docs[i][HITLINK];
+	      var resdata = {title: title, text: text};
+	      if (HITTEASER) {
+		var teaser = get_maybe_highlit(result, i, HITTEASER);
+		resdata.teaser = teaser;
+	      }
+	      if (HITLINK) {
+		var link = result.response.docs[i][HITLINK];
+		resdata.link = link;
+	      }
 	      
               rs.append(TEMPLATES.hitTemplate({title: title, teaser: teaser,
 		      text: text,

@@ -34,7 +34,11 @@
     <!--Handlebars layout templates-->
     <script type="text/x-handlebars-template" id="hit-template">
     <div class="entry">
-    <a href="{{link}}" target="_blank" title={{teaser}}>{{{title}}}</a><br/>
+    {{#if link}}
+    <a {{#if link}}href="{{link}}"{{/if}} target="_blank" {{#if teaser}}title={{teaser}}{{/if}}>{{{title}}}</a><br/>
+    {{else}}
+    <strong>{{{title}}}</strong><br>
+    {{/if}}
     {{{text}}}
     </div>
     </script>
