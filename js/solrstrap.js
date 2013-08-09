@@ -134,8 +134,8 @@ var FILTERS = [];
 			  title: k, navs: makeNavsSensible(result.facet_counts.facet_fields[k])}));
 		}
 	      }
-	      $("div.facet:not(:first-child) > a").click(add_nav);
-	      $("div.facet:first-child > a").click(del_nav);
+	      $("div.facet > a").click(add_nav);
+	      $("div.chosen-facet > a").click(del_nav);
 	    }
 	  }});
     };
