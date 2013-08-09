@@ -15,8 +15,7 @@ var HL = true;
 var HL_FL = 'text, title';
 var HL_SIMPLE_PRE = '<em>';
 var HL_SIMPLE_POST = '</em>';
-
-var FILTERS = [];
+var HL_SNIPPETS = 3;
 
 //when the page is loaded- do this
   $(document).ready(function() {
@@ -78,7 +77,7 @@ var FILTERS = [];
 	    dataType: 'jsonp',
 	    data: buildSearchParams(q, fq, offset), 
 	    traditional: true,
-	    jsonp: "json.wrf",
+	    jsonp: 'json.wrf',
 	    success: 
 	  function(result){
 	    console.log(result);
@@ -92,18 +91,18 @@ var FILTERS = [];
 	      }
 	      //draw the individual hits
 	      for (var i = 0; i < result.response.docs.length; i++) {
-		var title = get_maybe_highlit(result, i, HITTITLE);
-		var text = get_maybe_highlit(result, i, HITBODY);
-		var teaser = get_maybe_highlit(result, i, HITTEASER);
+		var title = normalize_ws(get_maybe_highlit(result, i, HITTITLE));
+		  var text = normalize_ws(get_maybe_highlit(result, i, HITBODY));
+		  var teaser = normalize_ws(get_maybe_highlit(result, i, HITTEASER));
 		var link = result.response.docs[i][HITLINK];
 	      
 		var hit_data = {title: title, text: text};
 
 		if (teaser) {
-		  hit_data["teaser"] = teaser;
+		  hit_data['teaser'] = teaser;
 		}
 		if (link) {
-		  hit_data["link"] = link;
+		  hit_data['link'] = link;
 		}
 
 		rs.append(TEMPLATES.hitTemplate(hit_data));
@@ -134,8 +133,8 @@ var FILTERS = [];
 			  title: k, navs: makeNavsSensible(result.facet_counts.facet_fields[k])}));
 		}
 	      }
-	      $("div.facet > a").click(add_nav);
-	      $("div.chosen-facet > a").click(del_nav);
+	      $('div.facet > a').click(add_nav);
+	      $('div.chosen-facet > a').click(del_nav);
 	    }
 	  }});
     };
@@ -188,29 +187,6 @@ var FILTERS = [];
     return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
   }
 
-  //generates a search URL from the CONSTants
-  function getSearchURL(q, offset) {
-    var URL = SERVERROOT
-    + '?json.wrf=?'
-    + '&rows=' + HITSPERPAGE
-    + '&wt=json'
-    + '&q=' + q
-    + '&start=' + offset;
-    if (FACETS.length > 0) {
-      URL += '&facet=true&facet.mincount=1&facet.limit=20';
-      for (var i = 0; i < FACETS.length; i++) {
-        URL += '&facet.field=' + FACETS[i];
-      }
-      for (var i = 0; i < getURLParamArray('fq').length; i++) {
-        URL += '&fq=' + getURLParamArray('fq')[i];
-      }
-    }
-    if (HL_FL) {
-      URL += '&hl=true&hl.fl='+HL_FL+'&hl.simple.pre='+HL_SIMPLE_PRE+'&hl.simple.post='+HL_SIMPLE_POST
-    }
-    return URL;
-  }
-
   function buildSearchParams(q, fq, offset) {
     var ret = { 
     'rows': HITSPERPAGE,
@@ -232,6 +208,7 @@ var FILTERS = [];
       ret['hl.fl'] = HL_FL;
       ret['hl.simple.pre'] = HL_SIMPLE_PRE;
       ret['hl.simple.post'] = HL_SIMPLE_POST;
+      ret['hl.snippets'] = HL_SNIPPETS;
     }
     return ret;
   }
@@ -239,15 +216,28 @@ var FILTERS = [];
   //optionally convert a string array to a string, by concatenation
   function array_as_string(array_or_string)
   {
-    if (typeof(array_or_string) == 'string') 
-      return array_or_string;
+    var ret = '';
+    if (typeof(array_or_string) == 'string') {
+      ret = array_or_string;
+    }
     else if (typeof(array_or_string) == 'object' 
 	     && array_or_string.hasOwnProperty('length') 
-	     && array_or_string.length > 0) 
-      return array_or_string.join(" ... ");
-    else 
-      return '';
+	     && array_or_string.length > 0) {
+      ret = array_or_string.join(" ... ");
+    }
+    return ret;
   }
+
+  //normalize a string with respect to whitespace:
+  //1) Remove all leadsing and trailing whitespace
+  //2) Replace all runs of tab, space and &nbsp; with a single space
+  function normalize_ws(string) 
+  {
+    return string.replace(/^\s+/, '')
+      .replace(/\s+$/, '')
+      .replace(/(?: |\t|&nbsp;|&#xa0;|\xa0)+/g, ' '); 
+  }
+
 
   //get field from result for document i, optionally replacing with
   //highlit version
