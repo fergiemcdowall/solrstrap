@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Sorlstrap Template</title>
+    <title>Solrstrap Template</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
@@ -34,8 +34,13 @@
     <!--Handlebars layout templates-->
     <script type="text/x-handlebars-template" id="hit-template">
     <div class="entry">
-    <strong>{{title}}</strong><br>
-    {{text}}
+    {{#if link}}
+    <a href="{{link}}" target="_blank">{{{title}}}</a><br>
+    {{{text}}}
+    {{else}}
+    <strong>{{{title}}}</strong><br>
+    {{{text}}}
+    {{/if}}
     </div>
     </script>
     <script type="text/x-handlebars-template" id="result-summary-template">
@@ -47,15 +52,15 @@
     <div class="facet">
     <span class="nav-title">{{title}}</span><br>
     {{#each navs}}
-    <a href='{{../linkroot}}&fq={{../title}}:{{@key}}'>{{@key}}</a> ({{this}})<br/>
+    <a href='#' title='{{@key}} ({{this}})'>{{@key}}</a> ({{this}})<br/>
     {{/each}}
     </div>
     </script>
     <script type="text/x-handlebars-template" id="chosen-nav-template">
-    <div class="facet">
+    <div class="chosen-facet">
     <span class="nav-title">Filters</span><br>
     {{#each navs}}
-    <a class="close" href="{{this}}">&amp;times;</a><a href='{{this}}' id="{{@key}}" class="selectedNav">{{@key}}</a><br>
+    <a class="close" href="#">&times;</a><a href='#' id="{{@key}}" class="selectedNav" title="{{@key}}">{{@key}}</a><br>
     {{/each}}
     </div>
     </script>
