@@ -24,7 +24,8 @@ var HL_SNIPPETS = 3;
     $('#solrstrap-searchbox').attr('value', getURLParam('q'));
     $('#solrstrap-searchbox').focus();
     $('form.navbar-search').submit(handle_submit);
-    $(window).bind('hashchange', function (e) { hashchange(e.fragment); });
+    $(window).bind('hashchange', hashchange);
+    $('#solrstrap-searchbox').bind("change", querychange);
     hashchange();
   });
 
@@ -252,7 +253,7 @@ var HL_SNIPPETS = 3;
     var fq = getURLParamArray("fq");
     fq.push(newnav);
 
-    $.bbq.pushState({"fq": fq});
+    $.bbq.pushState({'fq': fq});
     return false;
   }
 
@@ -281,6 +282,15 @@ var HL_SNIPPETS = 3;
   function handle_submit()
   {
     $.bbq.removeState("fq");
-    $.bbq.pushState({'q': $('#solrstrap-searchbox').val()});
+    var q = $('#solrstrap-searchbox').val();
+    $.bbq.removeState("q");
+    if (q && q !== '') {
+      $.bbq.pushState({'q': $('#solrstrap-searchbox').val()});
+    }
     return false;
+  }
+
+  function querychange()
+  {
+    handle_submit();
   }
