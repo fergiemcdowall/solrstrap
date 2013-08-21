@@ -2,11 +2,13 @@
 <html>
   <head>
     <title>Solrstrap Template</title>
+    <meta http-equiv=Content-Type content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
-    <link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="css/solrstrap.css" rel="stylesheet" media="screen">
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet" media="screen">
+
+    <link href="/common/solrstrap-0.3/css/solrstrap.css" rel="stylesheet" media="screen">
   </head>
   <body screen_capture_injected="true">
 
@@ -59,17 +61,24 @@
     <script type="text/x-handlebars-template" id="chosen-nav-template">
     <div class="chosen-facet">
     <span class="nav-title">Filters</span><br>
-    {{#each navs}}
-    <a class="close" href="#">&times;</a><a href='#' id="{{@key}}" class="selectedNav" title="{{@key}}">{{@key}}</a><br>
+    {{#each this}}
+    <a class="close" href="#">&times;</a><a href='#' id="{{this}}" class="selectedNav" title="{{this}}">{{this}}</a><br>
     {{/each}}
     </div>
     </script>
 
     <!--load scripts at the bottom-->
-    <script type='text/javascript' src="js/jquery.min.js"></script>
-    <script type='text/javascript' src="bootstrap/js/bootstrap.min.js"></script>
-    <script type='text/javascript' src="js/handlebars.js"></script>
-    <script type='text/javascript' src="js/solrstrap.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/1.2.1/jquery-migrate.min.js"></script>
+
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery.ba-bbq/1.2.1/jquery.ba-bbq.min.js"></script>
+
+
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.0.0/handlebars.min.js"></script>
+    <script type='text/javascript' src="/common/solrstrap-0.3/js/solrstrap.js"></script>
+
 
   </body>
 </html>
