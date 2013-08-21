@@ -31,11 +31,12 @@ var HL_SNIPPETS = 3;
 
 //when the searchbox is typed- do this
   $('#solrstrap-searchbox').keyup(function() {
-    if ($(this).val().length > 3) {
-      $('#solrstrap-hits div[offset="0"]').loadSolrResults($(this).val(), getURLParamArray('fq'), 0);
+    var q = $.trim($(this).val());
+    if (q.length > 3) {
+      $('#solrstrap-hits div[offset="0"]').loadSolrResults(q, getURLParamArray('fq'), 0);
     }
     else {
-      $('#solrstrap-hits').css({ opacity: 0.5 });
+      // $('#solrstrap-hits').css({ opacity: 0.5 });
     }
   });
 
@@ -282,15 +283,21 @@ var HL_SNIPPETS = 3;
   function handle_submit()
   {
     $.bbq.removeState("fq");
-    var q = $('#solrstrap-searchbox').val();
+    var q = $.trim($('#solrstrap-searchbox').val());
     $.bbq.removeState("q");
-    if (q && q !== '') {
-      $.bbq.pushState({'q': $('#solrstrap-searchbox').val()});
+    if (q!== '') {
+      $.bbq.pushState({'q': q});
     }
     return false;
   }
 
   function querychange()
   {
-    handle_submit();
+    var q = $.trim($('#solrstrap-searchbox').val());
+    if (q !== '') {
+      handle_submit();
+    }
+    else {
+    }
+    return false;
   }
