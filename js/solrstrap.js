@@ -252,9 +252,16 @@ var HL_SNIPPETS = 3;
     var navvalue = $(whence).text();
     var newnav = navname + ':"' + navvalue.replace(/([\\\"])/g, "\\$1") + '"';
     var fq = getURLParamArray("fq");
-    fq.push(newnav);
 
-    $.bbq.pushState({'fq': fq});
+    // check if it already exists...
+    var existing = $.grep(fq, function(elt, idx) {
+	return elt === newnav;
+      });
+
+    if (existing.length === 0) {
+      fq.push(newnav);
+      $.bbq.pushState({'fq': fq});
+    }
     return false;
   }
 
