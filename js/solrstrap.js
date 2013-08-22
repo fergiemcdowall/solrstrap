@@ -289,22 +289,14 @@ var HL_SNIPPETS = 3;
 
   function handle_submit(event)
   {
-    $.bbq.removeState("fq");
     var q = $.trim($('#solrstrap-searchbox').val());
-    $.bbq.removeState("q");
-    if (q!== '') {
+    if (q !== '') {
+      $.bbq.removeState("fq");
+      $.bbq.removeState("q");
       $.bbq.pushState({'q': q});
     }
     return false;
   }
 
-  function querychange(event)
-  {
-    var q = $.trim($('#solrstrap-searchbox').val());
-    if (q !== '') {
-      handle_submit(event);
-    }
-    else {
-    }
-    return false;
-  }
+  var querychange = handle_submit;
+
