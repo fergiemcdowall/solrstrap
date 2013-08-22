@@ -1,6 +1,7 @@
 
 
 //CONST- CHANGE ALL THESE TO TELL SOLRSTRAP ABOUT THE LOCATION AND STRUCTURE OF YOUR SOLR
+
 var SERVERROOT = 'http://evolvingweb.ca/solr/reuters/select/'; //SELECT endpoint
 var HITTITLE = 'title';                                        //Name of the title field- the heading of each hit
 var HITBODY = 'text';                                          //Name of the body field- the teaser text of each hit
@@ -20,18 +21,22 @@ var HL_SNIPPETS = 3;
 //when the page is loaded- do this
   $(document).ready(function() {
     $('#solrstrap-hits').append('<div offset="0"></div>');
-    $('#solrstrap-hits div[offset="0"]').loadSolrResults(getURLParam('q'), getURLParamArray('fq'), 0);
     $('#solrstrap-searchbox').attr('value', getURLParam('q'));
     $('#solrstrap-searchbox').focus();
+    $('form.navbar-search').submit(handle_submit);
+    $(window).bind('hashchange', hashchange);
+    $('#solrstrap-searchbox').bind("change", querychange);
+    hashchange();
   });
 
 //when the searchbox is typed- do this
   $('#solrstrap-searchbox').keyup(function() {
-    if ($(this).val().length > 3) {
-      $('#solrstrap-hits div[offset="0"]').loadSolrResults($(this).val(), getURLParamArray('fq'), 0);
+    var q = $.trim($(this).val());
+    if (q.length > 3) {
+      $('#solrstrap-hits div[offset="0"]').loadSolrResults(q, /*getURLParamArray('fq')*/ [], 0);
     }
     else {
-      $('#solrstrap-hits').css({ opacity: 0.5 });
+      // $('#solrstrap-hits').css({ opacity: 0.5 });
     }
   });
 
@@ -80,7 +85,7 @@ var HL_SNIPPETS = 3;
 	    jsonp: 'json.wrf',
 	    success: 
 	  function(result){
-	    console.log(result);
+	    // console.log(result);
 	    //only redraw hits if there are new hits available
 	    if (result.response.docs.length > 0) {
 	      if (offset == 0) {
@@ -119,18 +124,16 @@ var HL_SNIPPETS = 3;
 	      $('#solrstrap-facets').empty();
 	      //chosen facets
 	      if (fq.length > 0) {
-		var chosenNavs = {};
-		for (var i = 0; i < fq.length; i++) {
-		  chosenNavs[fq[i]] = ('?q=' + q + '&fq=' + fq.join('&fq=')).replace('&fq=' + fq[i], '');
-		}
-		$('#solrstrap-facets').append(TEMPLATES.chosenNavTemplate({navs: chosenNavs}));
+		$('#solrstrap-facets').append(TEMPLATES.chosenNavTemplate(fq));
 	      }
 	      //available facets
 	      for (var k in result.facet_counts.facet_fields) {
 		if (result.facet_counts.facet_fields[k].length > 0) {
-		  $('#solrstrap-facets').append(TEMPLATES.navTemplate({linkroot: window.location.pathname + '?q=' + q 
-			  + ((fq.length > 0) ? '&fq=' : '') + fq.join('&fq='),
-			  title: k, navs: makeNavsSensible(result.facet_counts.facet_fields[k])}));
+		  $('#solrstrap-facets')
+		    .append(TEMPLATES.navTemplate({
+			title: k,
+			    navs:
+			  makeNavsSensible(result.facet_counts.facet_fields[k])}));
 		}
 	      }
 	      $('div.facet > a').click(add_nav);
@@ -152,30 +155,16 @@ var HL_SNIPPETS = 3;
 
   //utility function for grabbling URLs
   function getURLParam(name) {
-    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-    var regexS = "[\\?&]" + name + "=([^&#]*)";
-    var regex = new RegExp(regexS);
-    var results = regex.exec(window.location.search);
-    if(results == null)
-      return "";
-    else
-      return decodeURIComponent(results[1].replace(/\+/g, " "));
+    var ret = $.bbq.getState(name);
+    return ret;
   }
 
   //function to generate an array of URL parameters, where there are likely to be several params with the same key
   function getURLParamArray(name) {
-    var paramArray = [];
-    var paramString = window.location.search;
-    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-    var regexS = "[\\?&]" + name + "=([^&#]*)";
-    var regex = new RegExp(regexS);
-    while (regex.exec(paramString) != null) {
-      var results = regex.exec(paramString);
-      var paramValue = results[1];
-      paramString = paramString.replace("&" + name + "=" + paramValue, "");
-      paramArray.push(decodeURIComponent(paramValue.replace(/\+/g, " ")));
-    }
-    return paramArray;
+    var ret =  $.bbq.getState(name) || [];
+    if (typeof(ret) == 'string')
+      ret = [ret];
+    return ret;
   }
 
   //utility function that checks to see if an element is onscreen
@@ -261,11 +250,18 @@ var HL_SNIPPETS = 3;
     var whence = event.target;
     var navname = $(whence).closest("div.facet").children("span.nav-title").text();
     var navvalue = $(whence).text();
-    var newparam = {"fq": navname + ':"' + navvalue.replace(/([\\\"])/g, "\\$1")};
-    window.location.search += "&" + $.param(newparam) + '"';
+    var newnav = navname + ':"' + navvalue.replace(/([\\\"])/g, "\\$1") + '"';
+    var fq = getURLParamArray("fq");
 
-    // window.location.search += "&fq=" + encodeURIComponent(navname + ':"' + navvalue.replace(/([\\\"])/g, "\\$1") + '"');
+    // check if it already exists...
+    var existing = $.grep(fq, function(elt, idx) {
+	return elt === newnav;
+      });
 
+    if (existing.length === 0) {
+      fq.push(newnav);
+      $.bbq.pushState({'fq': fq});
+    }
     return false;
   }
 
@@ -277,7 +273,30 @@ var HL_SNIPPETS = 3;
       whence = $(whence).next().next();
     }
     var filter = $(whence).text();
-    var pattern = "&fq=" + encodeURIComponent(filter).replace(/%20/g, "+");
-    window.location.search = window.location.search.replace(pattern, '');
+    var fq = getURLParamArray("fq");
+
+    fq = $.grep(fq, function(elt, idx) {
+	return elt === filter;
+      }, true);
+    $.bbq.pushState({"fq": fq});
     return false;
   }
+
+  function hashchange(event)
+  {
+    $('#solrstrap-hits div[offset="0"]').loadSolrResults(getURLParam('q'), getURLParamArray('fq'), 0);
+  }
+
+  function handle_submit(event)
+  {
+    var q = $.trim($('#solrstrap-searchbox').val());
+    if (q !== '') {
+      $.bbq.removeState("fq");
+      $.bbq.removeState("q");
+      $.bbq.pushState({'q': q});
+    }
+    return false;
+  }
+
+  var querychange = handle_submit;
+
