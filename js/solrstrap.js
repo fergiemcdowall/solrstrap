@@ -33,7 +33,7 @@ var HL_SNIPPETS = 3;
   $('#solrstrap-searchbox').keyup(function() {
     var q = $.trim($(this).val());
     if (q.length > 3) {
-      $('#solrstrap-hits div[offset="0"]').loadSolrResults(q, getURLParamArray('fq'), 0);
+      $('#solrstrap-hits div[offset="0"]').loadSolrResults(q, /*getURLParamArray('fq')*/ [], 0);
     }
     else {
       // $('#solrstrap-hits').css({ opacity: 0.5 });
@@ -275,12 +275,12 @@ var HL_SNIPPETS = 3;
     return false;
   }
 
-  function hashchange(fragment)
+  function hashchange(event)
   {
     $('#solrstrap-hits div[offset="0"]').loadSolrResults(getURLParam('q'), getURLParamArray('fq'), 0);
   }
 
-  function handle_submit()
+  function handle_submit(event)
   {
     $.bbq.removeState("fq");
     var q = $.trim($('#solrstrap-searchbox').val());
@@ -291,11 +291,11 @@ var HL_SNIPPETS = 3;
     return false;
   }
 
-  function querychange()
+  function querychange(event)
   {
     var q = $.trim($('#solrstrap-searchbox').val());
     if (q !== '') {
-      handle_submit();
+      handle_submit(event);
     }
     else {
     }
