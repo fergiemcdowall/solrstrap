@@ -8,6 +8,8 @@ var HITBODY = 'text';                                          //Name of the bod
 var HITSPERPAGE = 20;                                          //page size- hits per page
 var FACETS = ['topics','organisations'];                       //facet categories
 
+var FACETS_TITLES = {'topics': 'subjects'};  // selective rename facet names for display
+
 var HITID = 'id'		// Name of the id field
 var HITTEASER = 'teaser';	// Name of field to use for teaser
 var HITLINK = 'url';		// Name of field to use for link
@@ -18,26 +20,19 @@ var HL_SIMPLE_PRE = '<em>';
 var HL_SIMPLE_POST = '</em>';
 var HL_SNIPPETS = 3;
 
+var AUTOSEARCH_DELAY = 1000;
+
 //when the page is loaded- do this
   $(document).ready(function() {
     $('#solrstrap-hits').append('<div offset="0"></div>');
     $('#solrstrap-searchbox').attr('value', getURLParam('q'));
     $('#solrstrap-searchbox').focus();
+    //when the searchbox is typed- do this
+    $('#solrstrap-searchbox').keyup(keyuphandler);
     $('form.navbar-search').submit(handle_submit);
     $(window).bind('hashchange', hashchange);
     $('#solrstrap-searchbox').bind("change", querychange);
     hashchange();
-  });
-
-//when the searchbox is typed- do this
-  $('#solrstrap-searchbox').keyup(function() {
-    var q = $.trim($(this).val());
-    if (q.length > 3) {
-      $('#solrstrap-hits div[offset="0"]').loadSolrResults(q, /*getURLParamArray('fq')*/ [], 0);
-    }
-    else {
-      // $('#solrstrap-hits').css({ opacity: 0.5 });
-    }
   });
 
   //jquery plugin allows resultsets to be painted onto any div.
@@ -56,7 +51,7 @@ var HL_SNIPPETS = 3;
         if (isScrolledIntoView(elem) && !$(elem).attr('loaded')) {
           //dont instantsearch and autoload at the same time
           if ($('#solrstrap-searchbox').val() != getURLParam('q')) {
-            window.location = 'solrstrap.html?q=' + $('#solrstrap-searchbox').val();
+	    handle_submit();
           }
           $(elem).attr('loaded', true);
           $(elem).getSolrResults(q, fq, offset);
@@ -69,13 +64,17 @@ var HL_SNIPPETS = 3;
 
   //jquery plugin for takling to solr
   (function( $ ){
+    var TEMPLATES = {
+    'hitTemplate':Handlebars.compile($("#hit-template").html()),
+    'summaryTemplate':Handlebars.compile($("#result-summary-template").html()),
+    'navTemplate':Handlebars.compile($("#nav-template").html()),
+    'chosenNavTemplate':Handlebars.compile($("#chosen-nav-template").html())
+    };
+    Handlebars.registerHelper('facet_displayname', function(facetname) {
+	return((FACETS_TITLES && FACETS_TITLES.hasOwnProperty(facetname)) ?
+	       FACETS_TITLES[facetname] : facetname);
+      });
     $.fn.getSolrResults = function(q, fq, offset) {
-      var TEMPLATES = {
-        'hitTemplate':Handlebars.compile($("#hit-template").html()),
-        'summaryTemplate':Handlebars.compile($("#result-summary-template").html()),
-        'navTemplate':Handlebars.compile($("#nav-template").html()),
-        'chosenNavTemplate':Handlebars.compile($("#chosen-nav-template").html())
-      }
       var rs = this;
       $(rs).parent().css({ opacity: 0.5 });
       $.ajax({url:SERVERROOT,
@@ -124,7 +123,14 @@ var HL_SNIPPETS = 3;
 	      $('#solrstrap-facets').empty();
 	      //chosen facets
 	      if (fq.length > 0) {
-		$('#solrstrap-facets').append(TEMPLATES.chosenNavTemplate(fq));
+		var fqobjs = [];
+		for (var i = 0; i < fq.length; i++) {
+		  var m = fq[i].match(/^([^:]+):(.*)/);
+		  if (m) {
+		    fqobjs.push({'name': m[1], 'value': m[2]});
+		  }
+		}
+		$('#solrstrap-facets').append(TEMPLATES.chosenNavTemplate(fqobjs));
 	      }
 	      //available facets
 	      for (var k in result.facet_counts.facet_fields) {
@@ -248,7 +254,7 @@ var HL_SNIPPETS = 3;
   function add_nav(event) 
   {
     var whence = event.target;
-    var navname = $(whence).closest("div.facet").children("span.nav-title").text();
+    var navname = $(whence).closest("div.facet").children("span.nav-title").data("facetname");
     var navvalue = $(whence).text();
     var newnav = navname + ':"' + navvalue.replace(/([\\\"])/g, "\\$1") + '"';
     var fq = getURLParamArray("fq");
@@ -270,9 +276,10 @@ var HL_SNIPPETS = 3;
   {
     var whence = event.target;
     if ($(whence).hasClass("close")) {
-      whence = $(whence).next().next();
+      whence = $(whence).next();
     }
-    var filter = $(whence).text();
+    // var filter = $(whence).text();
+    var filter = $(whence).data("filter");    
     var fq = getURLParamArray("fq");
 
     fq = $.grep(fq, function(elt, idx) {
@@ -299,4 +306,27 @@ var HL_SNIPPETS = 3;
   }
 
   var querychange = handle_submit;
+
+  var timeoutid;
+  function keyuphandler()
+  {
+    if (timeoutid) {
+      window.clearTimeout(timeoutid);
+    }
+    timeoutid = window.setTimeout(maybe_autosearch, AUTOSEARCH_DELAY);
+  }
+
+  function maybe_autosearch()
+  {
+    if (timeoutid) {
+      window.clearTimeout(timeoutid);
+    }
+    var q = $.trim($('#solrstrap-searchbox').val());
+    if (q.length > 3 && q !== getURLParam("q")) {
+      $('#solrstrap-hits div[offset="0"]').loadSolrResults(q, [], 0);
+    }
+    else {
+      // $('#solrstrap-hits').css({ opacity: 0.5 });
+    }
+  }
 
