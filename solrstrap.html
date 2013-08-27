@@ -2,7 +2,8 @@
 <html>
   <head>
     <title>Solrstrap Template</title>
-    <meta http-equiv=Content-Type content="text/html; charset=utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
@@ -27,8 +28,8 @@
     </div>
     <div class="container">
       <div class="row">
-        <div id="solrstrap-facets" class="span2"></div>
-        <div id="solrstrap-hits" class="span10"></div>
+        <div id="solrstrap-facets" class="span4"></div>
+        <div id="solrstrap-hits" class="span8"></div>
       </div>
     </div>
 
@@ -52,7 +53,7 @@
     </script>
     <script type="text/x-handlebars-template" id="nav-template">
     <div class="facet">
-    <span class="nav-title">{{title}}</span><br>
+    <span class="nav-title" data-facetname="{{title}}">{{facet_displayname title}}</span><br>
     {{#each navs}}
     <a href='#' title='{{@key}} ({{this}})'>{{@key}}</a> ({{this}})<br/>
     {{/each}}
@@ -62,7 +63,10 @@
     <div class="chosen-facet">
     <span class="nav-title">Filters</span><br>
     {{#each this}}
-    <a class="close" href="#">&times;</a><a href='#' id="{{this}}" class="selectedNav" title="{{this}}">{{this}}</a><br>
+    <a class="close" href="#">&times;</a>
+    <a href='#' class="selectedNav" 
+       data-filter="{{name}}:{{value}}"
+       title="{{facet_displayname name}}:{{value}}">{{facet_displayname name}}:{{value}}</a><br>
     {{/each}}
     </div>
     </script>
