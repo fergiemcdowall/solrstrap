@@ -20,7 +20,7 @@ var HL_SIMPLE_PRE = '<em>';
 var HL_SIMPLE_POST = '</em>';
 var HL_SNIPPETS = 3;
 
-var AUTOSEARCH_DELAY = 1000;
+var AUTOSEARCH_DELAY = 0;
 
 //when the page is loaded- do this
   $(document).ready(function() {
